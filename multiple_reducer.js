@@ -1,46 +1,65 @@
 const redux = require("redux")
+
 const createStore = redux.createStore;
+
+const combineRedicer = redux.combineReducers;
 
 const ORDER_PIZZA = "ORDER_PIZZA"
 const ORDER_BURGER = "ORDER_BURGER"
 
-function orderPizza(){
+function orderPizza() {
     return {
         type: ORDER_PIZZA,
     };
 }
-function orderBurger(){
+function orderBurger() {
     return {
-        type : ORDER_BURGER
+        type: ORDER_BURGER
     }
 }
-const initialState = {
-    pizzaBase : 100,
-    burgerBuns : 200
+
+const initialStateForPizza = {
+    pizzaBase: 100,
 }
 
-const reducer = (state=initialState , action) => {
-        switch(action.type){
-            case ORDER_PIZZA:
-                return {
-                    ...state,
-                    pizzaBase : state.pizzaBase-1
-                }
-            case ORDER_BURGER:
-                return{
-                    ...state,
-                    burgerBuns : state.burgerBuns-1
-                }
-            default:
-                return state;
-        }
+const initialStateForBurger = {
+    burgerBuns: 200
 }
 
-const store = createStore(reducer)
+const reducerPizza = (state = initialStateForPizza, action) => {
+    switch (action.type) {
+        case ORDER_PIZZA:
+            return {
+                ...state,
+                pizzaBase: state.pizzaBase - 1
+            }
+        default:
+            return state;
+    }
+}
 
-console.log("Initial state : " , store.getState());
+const reducerBurger = (state = initialStateForBurger, action) => {
+    switch (action.type) {
+        case ORDER_BURGER:
+            return {
+                ...state,
+                burgerBuns: state.burgerBuns - 1
+            }
+        default:
+            return state;
+    }
+}
 
-const unsubscribe = store.subscribe(() => console.log("Update State : " , store.getState()));
+const rootReducer = combineRedicer({
+    pizza:reducerPizza,
+    burger:reducerBurger
+})
+
+const store = createStore(rootReducer)
+
+console.log("Initial state : ", store.getState());
+
+const unsubscribe = store.subscribe(() => console.log("Update State : ", store.getState()));
 
 store.dispatch(orderPizza())
 store.dispatch(orderPizza())
